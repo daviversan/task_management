@@ -1,0 +1,15 @@
+C:\Users\Inteli\Documents\task_management\task_management\bin\Debug\net9.0\task_management.exe
+C:\Users\Inteli\Documents\task_management\task_management\bin\Debug\net9.0\task_management.deps.json
+C:\Users\Inteli\Documents\task_management\task_management\bin\Debug\net9.0\task_management.runtimeconfig.json
+C:\Users\Inteli\Documents\task_management\task_management\bin\Debug\net9.0\task_management.dll
+C:\Users\Inteli\Documents\task_management\task_management\bin\Debug\net9.0\task_management.pdb
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.AssemblyInfoInputs.cache
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.AssemblyInfo.cs
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.csproj.CoreCompileInputs.cache
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.sourcelink.json
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.dll
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\refint\task_management.dll
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.pdb
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\task_management.genruntimeconfig.cache
+C:\Users\Inteli\Documents\task_management\task_management\obj\Debug\net9.0\ref\task_management.dll
