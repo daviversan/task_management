@@ -5,9 +5,10 @@ namespace Task_Management.Models
 {
     public class Task
     {
-        // Atributos conforme o diagrama
+        // Atributos da classe Task
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        // Armazena a data e hora de criação da tarefa
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? DueDate { get; set; }
 
@@ -22,7 +23,7 @@ namespace Task_Management.Models
         {
         }
 
-        // Métodos representados no diagrama
+        // Métodos para criar tarefa
         public static Task CreateTask(string title, string description, DateTime? dueDate, TaskPriority priority)
         {
             return new Task
@@ -34,12 +35,14 @@ namespace Task_Management.Models
             };
         }
 
+        // Método para deletar uma tarefa
         public void DeleteTask()
         {
             // Em um sistema real, isso envolveria remoção de uma lista ou do banco
             Console.WriteLine($"Tarefa '{Title}' deletada.");
         }
 
+        // Método para atribuir um profissional a uma tarefa
         public void AssignProfessional(Professional professional)
         {
             if (!AssignedProfessionals.Contains(professional))
@@ -49,6 +52,7 @@ namespace Task_Management.Models
             }
         }
 
+        // Método para remover um profissional de uma tarefa
         public void DismissProfessional(Professional professional)
         {
             if (AssignedProfessionals.Contains(professional))
@@ -58,6 +62,8 @@ namespace Task_Management.Models
             }
         }
 
+
+        // Método para editar uma tarefa
         public void EditTask(string newTitle, string newDescription, DateTime? newDueDate, TaskPriority newPriority)
         {
             Title = newTitle;

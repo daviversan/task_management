@@ -2,8 +2,9 @@ namespace Task_Management.Models
 {
     public enum TaskStatus
     {
-        Pendente,
-        EmAndamento,
-        Concluida
+        // Valores possíveis de TaskStatus
+        Pendente, // 0
+        EmAndamento, // 1
+        Concluida // 2
     }
 }

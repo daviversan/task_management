@@ -1,215 +1,350 @@
-﻿using System;
-using System.Collections.Generic;
-using Task_Management.Models;
+﻿using Task_Management.Models;
 
-namespace TaskManagementApp
+// Variáveis para armazenar instâncias das entidades
+// Podem conter valores nulos
+Professional? professional = null;
+Project? project = null;
+Task_Management.Models.Task? task = null;
+
+// Loop principal do sistema
+// Mantém o programa em execução enquanto o usuário não escolher sair 
+bool exit = false;
+
+while (!exit)
 {
-    class Program
+
+    // Menu de opções
+    Console.Clear();
+    Console.WriteLine("=== Sistema de Gerenciamento de Tarefas ===");
+
+    // Exibe status atual
+    DisplayCurrentStatus();
+
+    Console.WriteLine("\nEscolha uma opção:");
+    Console.WriteLine("1. Criar profissional");
+    Console.WriteLine("2. Criar projeto");
+    Console.WriteLine("3. Criar tarefa");
+    Console.WriteLine("4. Associar profissional à tarefa");
+    Console.WriteLine("5. Adicionar tarefa ao projeto");
+    Console.WriteLine("6. Adicionar profissional ao projeto");
+    Console.WriteLine("7. Deletar entidades");
+    Console.WriteLine("0. Sair");
+
+    Console.Write("\nOpção: ");
+#pragma warning disable CS8600 
+    string option = Console.ReadLine();
+#pragma warning restore CS8600 // Converte valores nulos em tipos não nulos
+
+    switch (option)
     {
-        static void Main(string[] args)
+        case "1":
+            CreateProfessional();
+            break;
+        case "2":
+            CreateProject();
+            break;
+        case "3":
+            CreateTask();
+            break;
+        case "4":
+            AssignProfessionalToTask();
+            break;
+        case "5":
+            AddTaskToProject();
+            break;
+        case "6":
+            AddProfessionalToProject();
+            break;
+        case "7":
+            DeleteEntities();
+            break;
+        case "0":
+            exit = true;
+            break;
+        default:
+            Console.WriteLine("Opção inválida!");
+            break;
+    }
+
+    if (!exit)
+    {
+        Console.WriteLine("\nPressione qualquer tecla para continuar...");
+        Console.ReadKey();
+    }
+}
+
+void DisplayCurrentStatus()
+{
+    Console.WriteLine("\nStatus atual:");
+    Console.WriteLine($"- Profissional: {(professional != null ? professional.Name : "Nenhum")}");
+    Console.WriteLine($"- Projeto: {(project != null ? project.name : "Nenhum")}");
+    Console.WriteLine($"- Tarefa: {(task != null ? task.Title : "Nenhuma")}");
+
+    if (professional != null && task != null)
+    {
+        bool isAssigned = task.AssignedProfessionals.Contains(professional);
+        Console.WriteLine($"- Profissional associado à tarefa: {(isAssigned ? "Sim" : "Não")}");
+    }
+
+    if (professional != null && project != null)
+    {
+        bool isAssigned = project.AssignedProfessionals.Contains(professional);
+        Console.WriteLine($"- Profissional associado ao projeto: {(isAssigned ? "Sim" : "Não")}");
+    }
+
+    if (project != null && task != null)
+    {
+        bool isAdded = project.Tasks.Contains(task);
+        Console.WriteLine($"- Tarefa adicionada ao projeto: {(isAdded ? "Sim" : "Não")}");
+    }
+}
+
+void CreateProfessional()
+{
+    Console.Clear();
+    Console.WriteLine("=== Criar Profissional ===");
+
+    Console.Write("Nome do profissional: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string name = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+#pragma warning disable CS8604 // Possible null reference argument.
+    professional = new Professional(name);
+#pragma warning restore CS8604 // Possible null reference argument.
+    Console.WriteLine($"\nProfissional '{professional.Name}' criado com sucesso!");
+}
+
+void CreateProject()
+{
+    Console.Clear();
+    Console.WriteLine("=== Criar Projeto ===");
+
+    Console.Write("Nome do projeto: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string name = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+    Console.Write("Descrição do projeto: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string description = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+#pragma warning disable CS8604 // Possible null reference argument.
+    project = Project.CreateProject(name, description);
+#pragma warning restore CS8604 // Possible null reference argument.
+    Console.WriteLine($"\nProjeto '{project.name}' criado com sucesso!");
+}
+
+void CreateTask()
+{
+    Console.Clear();
+    Console.WriteLine("=== Criar Tarefa ===");
+
+    Console.Write("Título da tarefa: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string title = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+    Console.Write("Descrição da tarefa: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string description = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+    Console.Write("Data de prazo (dd/mm/aaaa ou deixe em branco): ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string dateInput = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+    DateTime? deadline = null;
+    if (!string.IsNullOrWhiteSpace(dateInput))
+    {
+        if (DateTime.TryParse(dateInput, out DateTime parsedDate))
         {
-            Console.WriteLine("=== Sistema de Gerenciamento de Tarefas - Testes ===\n");
-            
-            // Executa os testes automaticamente
-            ExecuteTests();
-            
-            Console.WriteLine("\nPressione qualquer tecla para encerrar...");
-            Console.ReadKey();
+            deadline = parsedDate;
         }
-
-        static void ExecuteTests()
+        else
         {
-            Console.WriteLine("Iniciando testes do sistema...\n");
-
-            // Testes de criação de entidades
-            TestEntityCreation();
-            
-            // Testes de associação entre entidades
-            TestEntityAssociations();
-            
-            // Testes de atualização de entidades
-            TestEntityUpdates();
-            
-            // Teste de remoção de entidades
-            TestEntityDeletion();
-
-            Console.WriteLine("\nTodos os testes foram concluídos!");
+            Console.WriteLine("Formato de data inválido. Continuando sem data de prazo.");
         }
+    }
 
-        static void TestEntityCreation()
-        {
-            Console.WriteLine("=== TESTE: Criação de Entidades ===");
-            
-            // Teste 1: Criar um profissional
-            var professional = new Professional("João Silva");
-            Console.WriteLine($"Teste 1: Profissional criado - Nome: {professional.Name}");
-            
-            // Teste 2: Criar um projeto
-            var project = Project.CreateProject("Sistema Web", "Sistema web para gestão de tarefas");
-            Console.WriteLine($"Teste 2: Projeto criado - Nome: {project.name}, Descrição: {project.description}");
-            
-            // Teste 3: Criar uma tarefa
-            var task = Task_Management.Models.Task.CreateTask(
-                "Implementar login", 
-                "Criar tela e backend para login de usuários",
-                DateTime.Now.AddDays(5),
-                TaskPriority.Alta
-            );
-            Console.WriteLine($"Teste 3: Tarefa criada - Título: {task.Title}, " + 
-                $"Prioridade: {task.Priority}, Status: {task.Status}");
-            
-            Console.WriteLine("Todos os testes de criação de entidades PASSARAM!\n");
-        }
+    Console.WriteLine("\nPrioridade da tarefa:");
+    Console.WriteLine("1. Baixa");
+    Console.WriteLine("2. Média");
+    Console.WriteLine("3. Alta");
+    Console.Write("Escolha: ");
 
-        static void TestEntityAssociations()
-        {
-            Console.WriteLine("=== TESTE: Associação entre Entidades ===");
-            
-            // Criação das entidades para teste
-            var maria = new Professional("Maria Santos");
-            var carlos = new Professional("Carlos Oliveira");
-            
-            var projetoWeb = Project.CreateProject("Portal Corporativo", "Portal para informações da empresa");
-            var projetoMobile = Project.CreateProject("App Mobile", "Aplicativo móvel para acesso");
-            
-            var tarefaFrontend = Task_Management.Models.Task.CreateTask(
-                "Desenvolver Frontend", 
-                "Criar interfaces responsivas",
-                DateTime.Now.AddDays(10),
-                TaskPriority.Media
-            );
-            
-            var tarefaBackend = Task_Management.Models.Task.CreateTask(
-                "Desenvolver Backend", 
-                "Criar APIs e banco de dados",
-                DateTime.Now.AddDays(15),
-                TaskPriority.Alta
-            );
-            
-            // Teste 1: Associar profissionais a projetos
-            projetoWeb.AssignProfessional(maria);
-            projetoWeb.AssignProfessional(carlos);
-            projetoMobile.AssignProfessional(maria);
-            
-            Console.WriteLine($"Teste 1: Profissionais atribuídos aos projetos");
-            Console.WriteLine($"- Projeto '{projetoWeb.name}' tem {projetoWeb.AssignedProfessionals.Count} profissionais");
-            Console.WriteLine($"- Projeto '{projetoMobile.name}' tem {projetoMobile.AssignedProfessionals.Count} profissionais");
-            Console.WriteLine($"- Profissional '{maria.Name}' está em {maria.Projects.Count} projetos");
-            
-            // Teste 2: Associar tarefas a projetos
-            projetoWeb.AddTask(tarefaFrontend);
-            projetoWeb.AddTask(tarefaBackend);
-            
-            Console.WriteLine($"Teste 2: Tarefas adicionadas ao projeto '{projetoWeb.name}'");
-            Console.WriteLine($"- O projeto tem {projetoWeb.Tasks.Count} tarefas");
-            
-            // Teste 3: Associar profissionais a tarefas
-            tarefaFrontend.AssignProfessional(maria);
-            tarefaBackend.AssignProfessional(carlos);
-            
-            // Também adicionamos manualmente à lista de tarefas do profissional
-            maria.Tasks.Add(tarefaFrontend);
-            carlos.Tasks.Add(tarefaBackend);
-            
-            Console.WriteLine($"Teste 3: Profissionais atribuídos às tarefas");
-            Console.WriteLine($"- Tarefa '{tarefaFrontend.Title}' tem {tarefaFrontend.AssignedProfessionals.Count} profissionais");
-            Console.WriteLine($"- Tarefa '{tarefaBackend.Title}' tem {tarefaBackend.AssignedProfessionals.Count} profissionais");
-            
-            // Listando tarefas de um profissional
-            Console.WriteLine($"\nListando tarefas de {maria.Name}:");
-            maria.ListTasks();
-            
-            Console.WriteLine("Todos os testes de associação de entidades PASSARAM!\n");
-        }
+    TaskPriority priority = TaskPriority.Media;
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string priorityChoice = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
-        static void TestEntityUpdates()
-        {
-            Console.WriteLine("=== TESTE: Atualização de Entidades ===");
-            
-            // Criação das entidades para teste
-            var task = Task_Management.Models.Task.CreateTask(
-                "Bug fixing", 
-                "Corrigir bugs críticos",
-                DateTime.Now.AddDays(2),
-                TaskPriority.Media
-            );
-            
-            // Teste 1: Atualizar uma tarefa
-            Console.WriteLine($"Teste 1: Atualização de tarefa");
-            Console.WriteLine($"- Estado original: Título='{task.Title}', Prioridade={task.Priority}, Status={task.Status}");
-            
-            task.EditTask(
-                "Correção de bugs críticos",
-                "Corrigir bugs impedindo uso do sistema",
-                DateTime.Now.AddDays(1),
-                TaskPriority.Alta
-            );
-            
-            // Mudando o status
-            task.Status = Task_Management.Models.TaskStatus.EmAndamento;
-            
-            Console.WriteLine($"- Estado após atualização: Título='{task.Title}', Prioridade={task.Priority}, Status={task.Status}");
-            
-            Console.WriteLine("Todos os testes de atualização de entidades PASSARAM!\n");
-        }
+    switch (priorityChoice)
+    {
+        case "1":
+            priority = TaskPriority.Baixa;
+            break;
+        case "2":
+            priority = TaskPriority.Media;
+            break;
+        case "3":
+            priority = TaskPriority.Alta;
+            break;
+        default:
+            Console.WriteLine("Opção inválida! Usando prioridade Média como padrão.");
+            break;
+    }
 
-        static void TestEntityDeletion()
-        {
-            Console.WriteLine("=== TESTE: Remoção de Entidades ===");
-            
-            // Criação das entidades para teste
-            var professional = new Professional("Ana Souza");
-            var project = Project.CreateProject("Projeto Temporário", "Projeto para teste de remoção");
-            var task = Task_Management.Models.Task.CreateTask(
-                "Tarefa Temporária", 
-                "Tarefa para teste de remoção",
-                null,
-                TaskPriority.Baixa
-            );
-            
-            // Associações
-            project.AssignProfessional(professional);
-            project.AddTask(task);
-            task.AssignProfessional(professional);
-            professional.Tasks.Add(task);
-            
-            // Teste 1: Remover profissional de tarefa
-            Console.WriteLine($"Teste 1: Remoção de profissional de tarefa");
-            Console.WriteLine($"- Antes: Tarefa tem {task.AssignedProfessionals.Count} profissionais");
-            
-            task.DismissProfessional(professional);
-            
-            Console.WriteLine($"- Depois: Tarefa tem {task.AssignedProfessionals.Count} profissionais");
-            
-            // Teste 2: Remover profissional de projeto
-            Console.WriteLine($"Teste 2: Remoção de profissional de projeto");
-            Console.WriteLine($"- Antes: Projeto tem {project.AssignedProfessionals.Count} profissionais");
-            Console.WriteLine($"- Antes: Profissional está em {professional.Projects.Count} projetos");
-            
-            project.DismissProfessional(professional);
-            
-            Console.WriteLine($"- Depois: Projeto tem {project.AssignedProfessionals.Count} profissionais");
-            Console.WriteLine($"- Depois: Profissional está em {professional.Projects.Count} projetos");
-            
-            // Teste 3: Remover tarefa de projeto
-            task = Task_Management.Models.Task.CreateTask("Nova Tarefa", "Descrição", null, TaskPriority.Media);
-            project.AddTask(task);
-            
-            Console.WriteLine($"Teste 3: Remoção de tarefa de projeto");
-            Console.WriteLine($"- Antes: Projeto tem {project.Tasks.Count} tarefas");
-            
-            project.RemoveTask(task);
-            
-            Console.WriteLine($"- Depois: Projeto tem {project.Tasks.Count} tarefas");
-            
-            // Teste 4: Excluir entidades
-            Console.WriteLine($"Teste 4: Exclusão de entidades");
-            
-            professional.DeleteProfessional();
-            project.DeleteProject();
-            task.DeleteTask();
-            
-            Console.WriteLine("Todos os testes de remoção de entidades PASSARAM!\n");
-        }
+#pragma warning disable CS8604 // Possible null reference argument.
+    task = Task_Management.Models.Task.CreateTask(title, description, deadline, priority);
+#pragma warning restore CS8604 // Possible null reference argument.
+    Console.WriteLine($"\nTarefa '{task.Title}' criada com sucesso!");
+}
+
+void AssignProfessionalToTask()
+{
+    Console.Clear();
+    Console.WriteLine("=== Associar Profissional à Tarefa ===");
+
+    if (professional == null)
+    {
+        Console.WriteLine("Erro: Nenhum profissional criado ainda!");
+        return;
+    }
+
+    if (task == null)
+    {
+        Console.WriteLine("Erro: Nenhuma tarefa criada ainda!");
+        return;
+    }
+
+    task.AssignProfessional(professional);
+    professional.Tasks.Add(task);
+
+    Console.WriteLine($"Profissional '{professional.Name}' associado à tarefa '{task.Title}' com sucesso!");
+}
+
+void AddTaskToProject()
+{
+    Console.Clear();
+    Console.WriteLine("=== Adicionar Tarefa ao Projeto ===");
+
+    if (project == null)
+    {
+        Console.WriteLine("Erro: Nenhum projeto criado ainda!");
+        return;
+    }
+
+    if (task == null)
+    {
+        Console.WriteLine("Erro: Nenhuma tarefa criada ainda!");
+        return;
+    }
+
+    project.AddTask(task);
+
+    Console.WriteLine($"Tarefa '{task.Title}' adicionada ao projeto '{project.name}' com sucesso!");
+}
+
+void AddProfessionalToProject()
+{
+    Console.Clear();
+    Console.WriteLine("=== Adicionar Profissional ao Projeto ===");
+
+    if (project == null)
+    {
+        Console.WriteLine("Erro: Nenhum projeto criado ainda!");
+        return;
+    }
+
+    if (professional == null)
+    {
+        Console.WriteLine("Erro: Nenhum profissional criado ainda!");
+        return;
+    }
+
+    project.AssignProfessional(professional);
+
+    Console.WriteLine($"Profissional '{professional.Name}' adicionado ao projeto '{project.name}' com sucesso!");
+}
+
+void DeleteEntities()
+{
+    Console.Clear();
+    Console.WriteLine("=== Deletar Entidades ===");
+    Console.WriteLine("O que você deseja deletar?");
+    Console.WriteLine("1. Profissional");
+    Console.WriteLine("2. Projeto");
+    Console.WriteLine("3. Tarefa");
+    Console.WriteLine("4. Tudo");
+    Console.WriteLine("0. Voltar");
+
+    Console.Write("\nOpção: ");
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+    string option = Console.ReadLine();
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+
+    switch (option)
+    {
+        case "1":
+            if (professional != null)
+            {
+                professional.DeleteProfessional();
+                professional = null;
+                Console.WriteLine("Profissional deletado com sucesso!");
+            }
+            else
+            {
+                Console.WriteLine("Não há profissional para deletar.");
+            }
+            break;
+        case "2":
+            if (project != null)
+            {
+                project.DeleteProject();
+                project = null;
+                Console.WriteLine("Projeto deletado com sucesso!");
+            }
+            else
+            {
+                Console.WriteLine("Não há projeto para deletar.");
+            }
+            break;
+        case "3":
+            if (task != null)
+            {
+                task.DeleteTask();
+                task = null;
+                Console.WriteLine("Tarefa deletada com sucesso!");
+            }
+            else
+            {
+                Console.WriteLine("Não há tarefa para deletar.");
+            }
+            break;
+        case "4":
+            if (professional != null)
+            {
+                professional.DeleteProfessional();
+                professional = null;
+            }
+            if (project != null)
+            {
+                project.DeleteProject();
+                project = null;
+            }
+            if (task != null)
+            {
+                task.DeleteTask();
+                task = null;
+            }
+            Console.WriteLine("Todas as entidades foram deletadas com sucesso!");
+            break;
+        case "0":
+            return;
+        default:
+            Console.WriteLine("Opção inválida!");
+            break;
     }
 }
